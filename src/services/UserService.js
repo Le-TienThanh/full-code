@@ -1,6 +1,10 @@
-const User = require("../models/UserModel");
-const bcrypt = require("bcrypt");
+// const User = require("../models/UserModel");
+import User from "../models/UserModel.js";
 
+// const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
+
+import { generalAccessToken } from './JwtService.js';
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
     const { name, email, password, confirmPassword, phone } = newUser;
@@ -83,6 +87,6 @@ const loginUser = (userLogin) => {
     }
   });
 };
-module.exports = { createUser, loginUser };
+export default { createUser, loginUser };
 
 // module.exports = { createUser };
