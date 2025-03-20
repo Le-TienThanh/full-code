@@ -1,48 +1,49 @@
-
-// const User = require("../models/UserModel");
+const User = require("../models/UserModel");
 // const bcrypt = require("bcrypt");
 
-const createUser = () => {
-  return new Promise( (resolve, reject) => {
-    try {
-      resolve({})
-      
-    } catch (e) {
-      reject(e);
+const createUser = (newUser) => {
+  return new Promise(async (resolve, reject) => {
+    const { name, email, password, confirmPassword, phone } = newUser;
+    try{
+      const checkUser = await User.findOne({
+        email: email
+      })
+      if (checkUser != null) {
+        resolve({
+          status: "OK",
+          message: "The email is exist!",
+        });
+      }
+      const createUser = await User.create({
+        name,
+        email,
+        password,
+        confirmPassword,
+        phone,
+      });
+      if (createUser) {
+        resolve({
+          status: "OK",
+          message: "Create user success!",
+          data: createUser,
+        });
+      }
+
       
     }
-    // const { name, email, password, confirmPassword, phone } = newUser;
-
-    // try {
-    //   const checkUser = await User.findOne({ email: email });
-    //   if (checkUser != null) {
-    //     resolve({
-    //       status: "OK",
-    //       message: "The email is exist!",
-    //     });
-    //   }
-    //   const hash = bcrypt.hashSync(password, 10);
-      
-    //   const createUser = await User.create({
-    //     name,
-    //     email,
-    //     password: hash,
-
-    //     phone,
-    //   });
-    //   if (createUser) {
-    //     resolve({
-    //       status: "OK",
-    //       message: "Create user success!",
-    //       data: createUser,
-    //     });
-    //   }
-    //   // resolve({});
-    // } catch (e) {
-    //   reject(e);
-    // }
+    catch(e){
+      reject(e);
+    }
   });
 };
+
+
+
+  
+    
+// const hash = bcrypt.hashSync(password, 10);
+
+
 // const loginUser = (userLogin) => {
 //   return new Promise(async (resolve, reject) => {
 //     const { name, email, password, confirmPassword, phone } = userLogin;
@@ -56,8 +57,7 @@ const createUser = () => {
 //         });
 //       }
 //       // const comparePassword = bcrypt.compareSync(password, checkUser.password);
-      
-      
+
 //       // if (!comparePassword) {
 //       //   resolve({
 //       //     status: "OK",
