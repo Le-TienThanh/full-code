@@ -1,5 +1,8 @@
 const User = require("../models/UserModel");
-// const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
+const {generalAccessToken,
+  generalRefreshToken,
+} = require("./JwtService");
 
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
@@ -14,11 +17,13 @@ const createUser = (newUser) => {
           message: "The email is exist!",
         });
       }
+      const hash = bcrypt.hashSync(password, 10);
+      
       const createUser = await User.create({
         name,
         email,
-        password,
-        confirmPassword,
+        password: hash,
+        
         phone,
       });
       if (createUser) {
@@ -44,53 +49,67 @@ const createUser = (newUser) => {
 // const hash = bcrypt.hashSync(password, 10);
 
 
-// const loginUser = (userLogin) => {
-//   return new Promise(async (resolve, reject) => {
-//     const { name, email, password, confirmPassword, phone } = userLogin;
+const loginUser = (userLogin) => {
+  return new Promise(async (resolve, reject) => {
+    const { name, email, password, confirmPassword, phone } = userLogin;
 
-//     try {
-//       const checkUser = await User.findOne({ email: email });
-//       if (checkUser === null) {
-//         resolve({
-//           status: "OK",
-//           message: "The user is not defined!",
-//         });
-//       }
-//       // const comparePassword = bcrypt.compareSync(password, checkUser.password);
+    try {
+      const checkUser = await User.findOne({ email: email });
+      if (checkUser === null) {
+        resolve({
+          status: "OK",
+          message: "The user is not exist!",
+        });
+      }
+      const comparePassword = bcrypt.compareSync(password, checkUser.password);
+     
 
-//       // if (!comparePassword) {
-//       //   resolve({
-//       //     status: "OK",
-//       //     message: "The password or user is not correct!",
-//       //   });
-//       // }
+      if (!comparePassword) {
+        resolve({
+          status: "OK",
+          message: "The password or user is not correct!",
+        });
+      }
+      
+    //   try {
+    //     const access_token =  generalAccessToken({
+    //         id: checkUser.id,
+    //         isAdmin: checkUser.isAdmin,
+    //     });
+    //     console.log("access_token", access_token);
+    // } catch (error) {
+    //     console.error("Error generating access token:", error);
+    // }
+      // console.log("imported", generalAccessToken);
 
-//       // const access_token = await generalAccessToken({
-//       //   id: checkUser.id,
-//       //   isAdmin: checkUser.isAdmin,
-//       // });
-//       // console.log("access_token", access_token);
 
-//       // const refresh_token = await generalRefreshToken({
-//       //   id: checkUser.id,
-//       //   isAdmin: checkUser.isAdmin,
-//       // });
-//       // resolve({
-//       //   status: "OK",
-//       //   message: "Create user success!",
-//       //   access_token,
-//       //   refresh_token,
-//       // });
-//       resolve({
-//         status: "OK",
-//         message: "Login success!",
-//         data: checkUser,
-//       });
-//     } catch (e) {
-//       reject(e);
-//     }
-//   });
-// };
-// module.exports = { createUser, loginUser };
+      const access_token = await generalAccessToken({
+        id: checkUser.id,
+        isAdmin: checkUser.isAdmin,
+      });
+      console.log("access_token", access_token);
 
-module.exports = { createUser };
+      const refresh_token = await generalRefreshToken({
+        id: checkUser.id,
+        isAdmin: checkUser.isAdmin,
+      });
+      // resolve({
+      //   status: "OK",
+      //   message: "Create user success!",
+      //   access_token,
+      //   refresh_token,
+      // });
+      resolve({
+        status: "OK",
+        message: "Login success!",
+        access_token,
+        refresh_token,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+module.exports = { createUser, loginUser };
+
+// module.exports = { createUser };

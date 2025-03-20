@@ -1,11 +1,23 @@
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 // const express = require("express");
 
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 
-export const  generalAccessToken = async (payload) => {
+const  generalAccessToken = async (payload) => {
     console.log('payload', payload);
     const access_token = jwt.sign({payload}, 'access_token', {expiresIn: '1h'});
+    // console.log('payload', payload);
+
+
+    return access_token
+
+
+
+};
+
+ const  generalRefreshToken = async (payload) => {
+    console.log('payload', payload);
+    const access_token = jwt.sign({payload}, 'refresh_token', {expiresIn: '365d'});
 
 
     return access_token;
@@ -14,18 +26,20 @@ export const  generalAccessToken = async (payload) => {
 
 };
 
-// export const  generalRefreshToken = async (payload) => {
-//     console.log('payload', payload);
-//     const access_token = jwt.sign({payload}, 'refresh_token', {expiresIn: '365d'});
+module.exports = {generalAccessToken, generalRefreshToken};
 
 
-//     return access_token;
-
-
-
+// const generalAccessToken = async (payload) => {
+//     console.log('Generating token with payload:', payload);
+//     try {
+//         const access_token = jwt.sign(payload, 'access_token', { expiresIn: '1h' });
+//         console.log('Generated access_token:', access_token);
+//         return access_token;
+//     } catch (error) {
+//         console.error('Error generating access token:', error);
+//         throw error;
+//     }
 // };
 
-// module.exports = {generalAccessToken, generalRefreshToken};
-
-
 // module.exports = {generalAccessToken};
+// export default generalAccessToken;
