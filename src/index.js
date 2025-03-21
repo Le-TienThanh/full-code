@@ -14,19 +14,6 @@ const port = process.env.PORT || 3001;
 app.use(bodyParser.json());
 routes(app);
 
-// mongoose
-//   .connect(`${process.env.MONGO_DB}`)
-//   .then(() => {
-//     console.log("Connect DB success!");
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-
-app.listen(port, () => {
-  console.log("server is running in port: ", +port);
-});
-
 mongoose
   .connect(`${process.env.MONGO_DB}`)
   .then(() => {
@@ -35,3 +22,16 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+app.listen(port, () => {
+  console.log("server is running in port: ", +port);
+});
+
+// mongoose
+//   .connect(`${process.env.MONGO_DB}`)
+//   .then(() => {
+//     console.log("Connect DB success!");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });

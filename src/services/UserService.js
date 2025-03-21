@@ -110,6 +110,39 @@ const loginUser = (userLogin) => {
     }
   });
 };
-module.exports = { createUser, loginUser };
+
+
+const updateUser = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    
+
+    try {
+      const checkUser = await User.findOne({
+        _id: id,
+      });
+      // console.log("checkUser", checkUser);
+      if (checkUser === null) {
+        resolve({
+          status: "OK",
+          message: "The user is not exist!",
+        });
+      }
+      const updateUser = await User.findByIdAndUpdate(id, data, {new: true});
+      console.log("updateUser", updateUser);
+      
+     
+      
+      resolve({
+        status: "OK",
+        message: "Login success!",
+        data: updateUser,
+        
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+module.exports = { createUser, loginUser, updateUser };
 
 // module.exports = { createUser };
