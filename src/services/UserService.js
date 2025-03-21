@@ -1,16 +1,15 @@
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
-const {generalAccessToken,
-  generalRefreshToken,
-} = require("./JwtService");
+const { generalAccessToken, generalRefreshToken } = require("./JwtService");
+
 
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
     const { name, email, password, confirmPassword, phone } = newUser;
-    try{
+    try {
       const checkUser = await User.findOne({
-        email: email
-      })
+        email: email,
+      });
       if (checkUser != null) {
         resolve({
           status: "OK",
@@ -18,12 +17,12 @@ const createUser = (newUser) => {
         });
       }
       const hash = bcrypt.hashSync(password, 10);
-      
+
       const createUser = await User.create({
         name,
         email,
         password: hash,
-        
+
         phone,
       });
       if (createUser) {
@@ -33,21 +32,11 @@ const createUser = (newUser) => {
           data: createUser,
         });
       }
-
-      
-    }
-    catch(e){
+    } catch (e) {
       reject(e);
     }
   });
 };
-
-
-
-  
-    
-// const hash = bcrypt.hashSync(password, 10);
-
 
 const loginUser = (userLogin) => {
   return new Promise(async (resolve, reject) => {
@@ -62,7 +51,6 @@ const loginUser = (userLogin) => {
         });
       }
       const comparePassword = bcrypt.compareSync(password, checkUser.password);
-     
 
       if (!comparePassword) {
         resolve({
@@ -70,18 +58,17 @@ const loginUser = (userLogin) => {
           message: "The password or user is not correct!",
         });
       }
-      
-    //   try {
-    //     const access_token =  generalAccessToken({
-    //         id: checkUser.id,
-    //         isAdmin: checkUser.isAdmin,
-    //     });
-    //     console.log("access_token", access_token);
-    // } catch (error) {
-    //     console.error("Error generating access token:", error);
-    // }
-      // console.log("imported", generalAccessToken);
 
+      //   try {
+      //     const access_token =  generalAccessToken({
+      //         id: checkUser.id,
+      //         isAdmin: checkUser.isAdmin,
+      //     });
+      //     console.log("access_token", access_token);
+      // } catch (error) {
+      //     console.error("Error generating access token:", error);
+      // }
+      // console.log("imported", generalAccessToken);
 
       const access_token = await generalAccessToken({
         id: checkUser.id,
@@ -111,11 +98,8 @@ const loginUser = (userLogin) => {
   });
 };
 
-
 const updateUser = (id, data) => {
   return new Promise(async (resolve, reject) => {
-    
-
     try {
       const checkUser = await User.findOne({
         _id: id,
@@ -127,22 +111,86 @@ const updateUser = (id, data) => {
           message: "The user is not exist!",
         });
       }
-      const updateUser = await User.findByIdAndUpdate(id, data, {new: true});
+      const updateUser = await User.findByIdAndUpdate(id, data, { new: true });
       console.log("updateUser", updateUser);
-      
-     
-      
+
       resolve({
         status: "OK",
         message: "Login success!",
         data: updateUser,
-        
       });
     } catch (e) {
       reject(e);
     }
   });
 };
-module.exports = { createUser, loginUser, updateUser };
+
+const deleteUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: id,
+      });
+      // console.log("checkUser", checkUser);
+      if (checkUser === null) {
+        resolve({
+          status: "OK",
+          message: "The user is not exist!",
+        });
+      }
+      await User.findByIdAndDelete(id);
+      // console.log("updateUser", updateUser);
+
+      resolve({
+        status: "OK",
+        message: "Delete user success!",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllUser = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allUser = await User.find();
+      resolve({
+        status: "OK",
+        message: "Success!",
+        data: allUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+const getDetailsUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({
+        _id: id,
+      });
+      // console.log("checkUser", checkUser);
+      if (user === null) {
+        resolve({
+          status: "OK",
+          message: "The user is not exist!",
+        });
+      }
+      // await User.findByIdAndDelete(id);
+      // console.log("updateUser", updateUser);
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS!",
+        data: user,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailsUser };
 
 // module.exports = { createUser };

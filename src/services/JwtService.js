@@ -28,17 +28,3 @@ const  generalAccessToken = async (payload) => {
 module.exports = {generalAccessToken, generalRefreshToken};
 
 
-// const generalAccessToken = async (payload) => {
-//     console.log('Generating token with payload:', payload);
-//     try {
-//         const access_token = jwt.sign(payload, 'access_token', { expiresIn: '1h' });
-//         console.log('Generated access_token:', access_token);
-//         return access_token;
-//     } catch (error) {
-//         console.error('Error generating access token:', error);
-//         throw error;
-//     }
-// };
-
-// module.exports = {generalAccessToken};
-// export default generalAccessToken;
