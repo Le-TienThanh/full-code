@@ -69,7 +69,7 @@ const deleteProduct = (id) => {
       const checkProduct = await Product.findOne({
         _id: id,
       });
-      
+
       if (checkProduct === null) {
         resolve({
           status: "OK",
@@ -77,7 +77,6 @@ const deleteProduct = (id) => {
         });
       }
       await Product.findByIdAndDelete(id);
-      
 
       resolve({
         status: "OK",
@@ -89,17 +88,24 @@ const deleteProduct = (id) => {
   });
 };
 
-const getAllProduct = () => {
+const getAllProduct = (limit = 8, page = 0) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allProduct = await Product.find();
+      const totalProduct = await Product.countDocuments()
+      const allProduct = await Product.find()
+        .limit(limit)
+        .skip(page * limit);
       resolve({
         status: "OK",
         message: "Success!",
         data: allProduct,
+        total: totalProduct,
+        pageCurrent: Number(page + 1),
+        totalPage: Math.ceil(totalProduct / limit)
       });
     } catch (e) {
       reject(e);
+      
     }
   });
 };
@@ -128,6 +134,10 @@ const getDetailsProduct = (id) => {
   });
 };
 
-module.exports = { createProduct, updateProduct, getDetailsProduct, deleteProduct,
-    getAllProduct
- };
+module.exports = {
+  createProduct,
+  updateProduct,
+  getDetailsProduct,
+  deleteProduct,
+  getAllProduct,
+};
