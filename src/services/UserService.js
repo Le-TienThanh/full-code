@@ -1,6 +1,7 @@
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const { generalAccessToken, generalRefreshToken } = require("./JwtService");
+const { JsonWebTokenError } = require("jsonwebtoken");
 
 
 const createUser = (newUser) => {
@@ -191,6 +192,15 @@ const getDetailsUser = (id) => {
     }
   });
 };
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailsUser };
 
-// module.exports = { createUser };
+
+module.exports = { createUser, 
+  loginUser, 
+  updateUser, 
+  deleteUser, 
+  getAllUser, 
+  getDetailsUser, 
+  // refreshTokenJwtService
+  };
+
+
