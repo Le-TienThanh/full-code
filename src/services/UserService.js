@@ -13,7 +13,7 @@ const createUser = (newUser) => {
       });
       if (checkUser != null) {
         resolve({
-          status: "OK",
+          status: "ERR",
           message: "The email is exist!",
         });
       }
@@ -41,13 +41,13 @@ const createUser = (newUser) => {
 
 const loginUser = (userLogin) => {
   return new Promise(async (resolve, reject) => {
-    const { name, email, password, confirmPassword, phone } = userLogin;
+    const { email, password } = userLogin;
 
     try {
       const checkUser = await User.findOne({ email: email });
       if (checkUser === null) {
         resolve({
-          status: "OK",
+          status: "ERR",
           message: "The user is not exist!",
         });
       }
@@ -55,7 +55,7 @@ const loginUser = (userLogin) => {
 
       if (!comparePassword) {
         resolve({
-          status: "OK",
+          status: "ERR",
           message: "The password or user is not correct!",
         });
       }
