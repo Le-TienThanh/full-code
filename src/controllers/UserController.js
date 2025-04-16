@@ -7,7 +7,7 @@ const createUser = async (req, res) => {
     const { email, password, confirmPassword } = req.body;
     const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     const isCheckEmail = reg.test(email);
-    if (  !email || !password || !confirmPassword ) {
+    if (!email || !password || !confirmPassword) {
       return res
         .status(200)
         .json({ status: "ERR", message: "The input is required" });
@@ -36,7 +36,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     const isCheckEmail = reg.test(email);
-    if (!email || !password  ) {
+    if (!email || !password) {
       return res
         .status(200)
         .json({ status: "ERR", message: "The input is required" });
@@ -44,13 +44,19 @@ const loginUser = async (req, res) => {
       return res
         .status(200)
         .json({ status: "ERR", message: "The input is email" });
-    } 
+    }
     // console.log("isCheck", isCheck);
     // const response = await UserService.loginUser(req.body);
     // return res.status(200).json(response);
     // console.log('req.body', req.body);
     const response = await UserService.loginUser(req.body);
-    return res.status(200).json(response);
+    const { refresh_token, ...newResponse } = response;
+    // console.log("response", response);
+    res.cookie("refresh_token", refresh_token, {
+      HttpOnly: true,
+      Secure: true,
+    });
+    return res.status(200).json(newResponse);
   } catch (e) {
     return res.status(404).json({ message: e });
   }
@@ -76,8 +82,6 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    
-    
 
     if (!userId) {
       return res.status(200).json({
@@ -94,8 +98,6 @@ const deleteUser = async (req, res) => {
 };
 const getAllUser = async (req, res) => {
   try {
-    
-
     const response = await UserService.getAllUser();
     return res.status(200).json(response);
   } catch (e) {
@@ -121,7 +123,7 @@ const getDetailsUser = async (req, res) => {
 };
 const refreshToken = async (req, res) => {
   try {
-    const token = req.headers.token.split(" ")[1];
+    const token = req.cookies.refresh_token;
 
     if (!token) {
       return res.status(200).json({
@@ -137,10 +139,14 @@ const refreshToken = async (req, res) => {
   }
 };
 
-module.exports = { createUser, loginUser, updateUser, deleteUser, 
-  getAllUser, 
-  getDetailsUser, 
-  refreshToken 
+module.exports = {
+  createUser,
+  loginUser,
+  updateUser,
+  deleteUser,
+  getAllUser,
+  getDetailsUser,
+  refreshToken,
 };
 
 // module.exports = { createUser };

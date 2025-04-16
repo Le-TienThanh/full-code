@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const generalAccessToken = async (payload) => {
-  const access_token = jwt.sign({ payload }, process.env.ACCESS_TOKEN, {
+  const access_token = jwt.sign({ ...payload }, process.env.ACCESS_TOKEN, {
     expiresIn: "30s",
   });
   // console.log('payload', payload);
@@ -13,7 +13,7 @@ const generalAccessToken = async (payload) => {
 
 const generalRefreshToken = async (payload) => {
   console.log("payload", payload);
-  const refresh_token = jwt.sign({ payload }, process.env.REFRESH_TOKEN, {
+  const refresh_token = jwt.sign({ ...payload }, process.env.REFRESH_TOKEN, {
     expiresIn: "365d",
   });
 
@@ -36,15 +36,13 @@ const refreshTokenJwtService = async (token) => {
           id: payload?.id,
           isAdmin: payload?.isAdmin,
         });
-        console.log("access_token", access_token)
+        console.log("access_token", access_token);
         resolve({
-            status: "OK",
-            message: "SUCCESS!",
-            access_token
-          });
+          status: "OK",
+          message: "SUCCESS!",
+          access_token,
+        });
       });
-
-      
     } catch (e) {
       reject(e);
     }
