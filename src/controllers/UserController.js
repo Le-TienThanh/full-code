@@ -55,7 +55,7 @@ const loginUser = async (req, res) => {
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
       secure: false,
-      samsite: "strict"
+      samsite: "strict",
     });
     return res.status(200).json(newResponse);
   } catch (e) {
@@ -139,6 +139,18 @@ const refreshToken = async (req, res) => {
     return res.status(404).json({ message: e });
   }
 };
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("refresh_token");
+
+    return res.status(200).json({
+      status: "OK",
+      message: "Logout successfully!",
+    });
+  } catch (e) {
+    return res.status(404).json({ message: e });
+  }
+};
 
 module.exports = {
   createUser,
@@ -148,6 +160,7 @@ module.exports = {
   getAllUser,
   getDetailsUser,
   refreshToken,
+  logoutUser,
 };
 
 // module.exports = { createUser };
