@@ -123,6 +123,7 @@ const getDetailsUser = async (req, res) => {
   }
 };
 const refreshToken = async (req, res) => {
+  
   try {
     const token = req.cookies.refresh_token;
 
