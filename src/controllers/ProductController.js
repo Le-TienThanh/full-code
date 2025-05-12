@@ -4,10 +4,10 @@ const createProduct = async (req, res) => {
   try {
     
 
-    const { name, image, type, price, rating, description, countInStock } = req.body;
+    const { name, image, type, price, rating, description, countInStock, discount } = req.body;
     
     
-    if (!name || !image || !type || !price || !rating  || !countInStock) {
+    if (!name || !image || !type || !price || !rating  || !countInStock || !discount) {
       return res
         .status(200)
         .json({ status: "ERR", message: "The input is required" });
@@ -101,7 +101,7 @@ const getAllProduct = async (req, res) => {
     const {limit, page, sort, filter} = req.query
 
     // const response = await ProductService.getAllProduct(Number(limit) || 8, Number(page) || 0, sort, filter);
-    const response = await ProductService.getAllProduct(Number(limit) || 8, Number(page) || 0, sort, filter);
+    const response = await ProductService.getAllProduct(Number(limit) || null, Number(page) || 0, sort, filter);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({ message: e });
