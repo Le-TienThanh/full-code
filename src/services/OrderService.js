@@ -35,25 +35,9 @@ const createOrder = (newOrder) => {
           { new: true }
         );
         if (productData) {
-          const createdOrder = await Order.create({
-            orderItems,
-            shippingAddress: {
-              fullName,
-              address,
-              city,
-              phone,
-            },
-            paymentMethod,
-            itemsPrice,
-            shippingPrice,
-            totalPrice,
-            user: user,
-          });
-          if (createdOrder) {
-            return {
-              status: "OK",
-              message: "SUCCESS ",
-            };
+          return {
+            status: "OK",
+            message: "SUCCESS"
           }
         } else {
           return {
@@ -64,12 +48,42 @@ const createOrder = (newOrder) => {
         }
       });
       const results = await Promise.all(promises);
-      const newData = results && results.filter((item) => item.id);
+      const newData = results && results.filter((item) => item.id );
       if (newData.length) {
+        const arrId = [];
+        newData.forEach((item) => {
+          arrId.push(item.id);
+        })
         resolve({
           status: "ERR",
-          message: `Sản phẩm với id ${newData.join(",")} không đủ hàng`,
+          message: `Sản phẩm với id: ${arrId.join(",")} không đủ hàng`,
         });
+      } else{
+        const createdOrder = await Order.create({
+          orderItems, 
+          shippingAddress: {
+            fullName,
+            address,
+            city,
+            phone
+          },
+          paymentMethod,
+          itemsPrice,
+          shippingPrice,
+          totalPrice,
+          user: user,
+          isPaid,
+          paidAt
+
+
+        })
+        if(createdOrder){
+          resolve({
+            status: "OK",
+            message: "success"
+          })
+        }
+ 
       }
       resolve({
         status: "OK",
@@ -175,10 +189,25 @@ const cancelOrderDetails = (id, data) => {
     }
   });
 };
+const getAllOrder = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allOrder = await Order.find();
+      resolve({
+        status: "OK",
+        message: "Success!",
+        data: allOrder,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
 module.exports = {
   createOrder,
   getAllOrderDetails,
   getOrderDetails,
   cancelOrderDetails,
+  getAllOrder
 };

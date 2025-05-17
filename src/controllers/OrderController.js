@@ -1,3 +1,4 @@
+const { response } = require("express");
 const OrderService = require("../services/OrderService");
 
 const createOrder = async (req, res) => {
@@ -86,8 +87,16 @@ const cancelOrderDetails = async (req, res) => {
     return res.status(404).json({ message: e });
   }
 };
+const getAllOrder = async (req, res) => {
+  try {
+    const data = await OrderService.getAllOrder();
+    return res.status(200).json(data)
+  } catch (e) {
+    return res.status(404).json({ message: e });
+  }
+};
 
 
-module.exports = { createOrder, getAllOrderDetails, getDetailsOrder, cancelOrderDetails };
+module.exports = { createOrder, getAllOrderDetails, getDetailsOrder, cancelOrderDetails, getAllOrder };
 
 // module.exports = { createUser };
